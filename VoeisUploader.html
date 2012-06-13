@@ -22,8 +22,10 @@
              function(data){
                alert("Data Loaded: " + data['api_key']);
                api_key = data['api_key'];
-               $('#login_div').toggle();
-               $('#add_project_div').toggle();
+               stmt.text = 'INSERT INTO api_key ("api_key") VALUES (' +'\''+api_key+'\''+')';
+               stmt.execute();
+               $('#login_div').hide();
+               $('#add_project_div').show();
              });
         }
 
@@ -41,6 +43,9 @@
                                   'template_id INTEGER, ' + 
                                   'time INTEGER, ' +
                                   'file Text)';
+              stmt.execute();
+              stmt.text = 'CREATE TABLE IF NOT EXISTS api_key ( ' +
+                                  'api_key Text)';
               stmt.execute();
          }
              
@@ -88,10 +93,28 @@
              }
          }
         
-        
+        function getProjectTasks(){
+          var results = null;
+          stmt.text = 'SELECT * FROM uploads'
+          stmt.execute();
+          results = stmt.getResult();
+          alert(results.data);
+          if( results.data != null )
+              {
+                   $('#project_tasks_div').empty();
+                   for( var c = 0; c < results.data.length; c++ )
+                   {
+                        $('#project_tasks_div').html($('#project_tasks_div').html() +'<p>Project ID: '+ results.data[c].project_id +
+                          '<br/>Filename: '+results.data[c].file+'</p>')
+                   }
+              }
+        }
     </script> 
 </head> 
-<body  onload="$('#add_project_div').toggle();doLoad();" style="padding-left:5px;"> 
+<body  onload="$('#add_project_div').hide();$('#project_tasks_div').hide();doLoad();getProjectTasks();" style="padding-left:5px;"> 
+    <a href="" onClick="$('#login_div').toggle();">Set User</a> |
+    <a href="" onClick="$('#add_project_div').toggle();">Add Upload Task</a> |
+    <a href="" onClick="$('#project_tasks_div').toggle();">View Upload Task</a>
     <h1>VOEIS Uploader</h1> 
     <div id="login_div">
       <p>
@@ -126,6 +149,9 @@
       <input type="text" name="time" id="time"/>
     </p>
     <button onClick="doSave();">Submit</button>
+  </div>
+  <div id="project_tasks_div">
+    Project Stuff in here
   </div>
 </body> 
 </html>
