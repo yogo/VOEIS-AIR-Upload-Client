@@ -1,0 +1,131 @@
+<html> 
+<head> 
+    <title>VOEIS Uploader</title> 
+    <script type="text/javascript" src="AIRAliases.js"></script> 
+    <script type="text/javascript" src="jquery-1.7.2-min.js"></script> 
+    <script type="text/javascript" src="jquery-mobile-1.1.0-min.js"></script> 
+    <link rel="stylesheet" href="jquery-mobile-1.1.0-min.css"/>
+    <script type="text/javascript"> 
+
+        //var base_url = "https://voeis.msu.montana.edu";
+        var base_url = "http://localhost:3000";
+        var api_key= "";
+        var db = null;
+        var stmt = null;
+        //var NONE = −1;
+        var CREATE_SCHEMA = 0;
+        var INSERT_DATA = 1;
+        var state = -1;
+        function fetch_api_key(){
+         //alert($('#login').val()+":"+$('#password').val()); 
+         $.get(base_url+"/user_session/get_api_key.json?user_session[login]="+$('#login').val()+"&user_session[password]="+$('#password').val(),
+             function(data){
+               alert("Data Loaded: " + data['api_key']);
+               api_key = data['api_key'];
+               $('#login_div').toggle();
+               $('#add_project_div').toggle();
+             });
+        }
+
+        // function doDbOpen( event )
+        //    {
+        //        stmt = new air.SQLStatement();
+        //        stmt.addEventListener( air.SQLErrorEvent.ERROR, 
+        //             doStmtError );
+        //        stmt.addEventListener( air.SQLEvent.RESULT, doStmtResult );
+        //           stmt.sqlConnection = db;
+        //           stmt.text = 'CREATE TABLE IF NOT EXISTS uploads ( ' +
+        //                               'id INTEGER PRIMARY KEY 
+        //        AUTOINCREMENT, ' +
+        //                               'project_id TEXT, ' +
+        //                               'site_id INTEGER, ' +
+        //                               'template_id INTEGER, ' + 
+        //                               'time INTEGER, ' +
+        //                                 'file Text' )';
+        //           stmt.execute();
+        //      }
+        //      function doLoad()
+        //      {
+        //         var file = air.File.applicationDirectory.resolvePath(
+        //      'voeis_upload.db' );
+        //         db = new air.SQLConnection();
+        //         db.addEventListener( air.SQLEvent.OPEN, doDbOpen );
+        //         db.open( file, air.SQLMode.CREATE );
+        //      }
+        //      function doStmtError( event )
+        //      {
+        //         alert( 'There has been a problem executing 
+        //         a statement:\n' + event.error.message );
+        //      }
+        //      function doSave()
+        //      {
+        //          var project_id = $('#project_id' ).val();
+        //          var site_id = $('#site_id' ).val();
+        //          var template_id = $('#tempalte_id').val();
+        //          var time = $('#time').val();
+        //          stmt.text = 'INSERT INTO uploads VALUES ( ' +
+        //                              'NULL, ' +
+        //                              '\'' + project_id + '\', ' +
+        //                              '\'' + site_id + '\', ' +
+        //                              '\'' + template_id + '\', ' + 
+        //                              '\'' + time + '\', ' +
+        //                              '\'' + file + '\')';
+        //          state = INSERT_DATA;
+        //          stmt.execute();
+        //      }
+        //      function doStmtResult( event )
+        //      {
+        //          switch( state )
+        //          {
+        //               case CREATE_SCHEMA:
+        //                    alert( 'The database table has been created.' );
+        //                    state = -1;
+        //                    break;
+        //               case INSERT_DATA:
+        //                    document.getElementById( 'txtFirst' ).value = '';
+        //                    document.getElementById( 'txtLast' ).value = '';
+        //                    alert( 'A new record has been stored.' );
+        //          }
+        //      }
+        
+        
+    </script> 
+</head> 
+<body  onload="$('#add_project_div').toggle();" style="padding-left:5px;"> 
+    <h1>VOEIS Uploader</h1> 
+    <div id="login_div">
+      <p>
+        VOEIS Login:
+        <input type="text" name="login" id="login"/>
+      </p>  
+      <p>
+        Password
+        <input type="password" name="password" id="password"/>
+      </p>
+      <button onClick="fetch_api_key();">Submit</button>
+    </div>
+  <div id="add_project_div">
+    <p>
+      Project ID:
+      <input type="text" name="project_id" id="project_id"/>
+    </p>  
+    <p>
+      Site ID:
+      <input type="password" name="site_id" id="site_id"/>
+    </p>
+    <p>
+      Template ID:
+      <input type="text" name="template_id" id="template_id"/>
+    </p>  
+    <p>
+      File:
+      <input type="file" name="file" id="file"/>
+    </p>  
+    <p>
+      Time interval in minutes:(1440 = once a day):
+      <input type="password" name="time" id="time"/>
+    </p>
+    <button onClick="">Submit</button>
+  </div>
+</body> 
+</html>
