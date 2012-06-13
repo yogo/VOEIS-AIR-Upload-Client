@@ -27,71 +27,71 @@
              });
         }
 
-        // function doDbOpen( event )
-        //    {
-        //        stmt = new air.SQLStatement();
-        //        stmt.addEventListener( air.SQLErrorEvent.ERROR, 
-        //             doStmtError );
-        //        stmt.addEventListener( air.SQLEvent.RESULT, doStmtResult );
-        //           stmt.sqlConnection = db;
-        //           stmt.text = 'CREATE TABLE IF NOT EXISTS uploads ( ' +
-        //                               'id INTEGER PRIMARY KEY 
-        //        AUTOINCREMENT, ' +
-        //                               'project_id TEXT, ' +
-        //                               'site_id INTEGER, ' +
-        //                               'template_id INTEGER, ' + 
-        //                               'time INTEGER, ' +
-        //                                 'file Text' )';
-        //           stmt.execute();
-        //      }
-        //      function doLoad()
-        //      {
-        //         var file = air.File.applicationDirectory.resolvePath(
-        //      'voeis_upload.db' );
-        //         db = new air.SQLConnection();
-        //         db.addEventListener( air.SQLEvent.OPEN, doDbOpen );
-        //         db.open( file, air.SQLMode.CREATE );
-        //      }
-        //      function doStmtError( event )
-        //      {
-        //         alert( 'There has been a problem executing 
-        //         a statement:\n' + event.error.message );
-        //      }
-        //      function doSave()
-        //      {
-        //          var project_id = $('#project_id' ).val();
-        //          var site_id = $('#site_id' ).val();
-        //          var template_id = $('#tempalte_id').val();
-        //          var time = $('#time').val();
-        //          stmt.text = 'INSERT INTO uploads VALUES ( ' +
-        //                              'NULL, ' +
-        //                              '\'' + project_id + '\', ' +
-        //                              '\'' + site_id + '\', ' +
-        //                              '\'' + template_id + '\', ' + 
-        //                              '\'' + time + '\', ' +
-        //                              '\'' + file + '\')';
-        //          state = INSERT_DATA;
-        //          stmt.execute();
-        //      }
-        //      function doStmtResult( event )
-        //      {
-        //          switch( state )
-        //          {
-        //               case CREATE_SCHEMA:
-        //                    alert( 'The database table has been created.' );
-        //                    state = -1;
-        //                    break;
-        //               case INSERT_DATA:
-        //                    document.getElementById( 'txtFirst' ).value = '';
-        //                    document.getElementById( 'txtLast' ).value = '';
-        //                    alert( 'A new record has been stored.' );
-        //          }
-        //      }
+        function doDbOpen( event )
+        {
+           stmt = new air.SQLStatement();
+           stmt.addEventListener( air.SQLErrorEvent.ERROR, 
+                doStmtError );
+           stmt.addEventListener( air.SQLEvent.RESULT, doStmtResult );
+              stmt.sqlConnection = db;
+              stmt.text = 'CREATE TABLE IF NOT EXISTS uploads ( ' +
+                                  'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+                                  'project_id TEXT, ' +
+                                  'site_id INTEGER, ' +
+                                  'template_id INTEGER, ' + 
+                                  'time INTEGER, ' +
+                                  'file Text)';
+              stmt.execute();
+         }
+             
+         function doLoad()
+         {
+            var file = air.File.applicationDirectory.resolvePath(
+         'voeis_upload.db' );
+            db = new air.SQLConnection();
+            db.addEventListener( air.SQLEvent.OPEN, doDbOpen );
+            db.open( file, air.SQLMode.CREATE );
+         }
+         function doStmtError( event )
+         {
+            alert( 'There has been a problem executing a statement:\n' + event.error.message );
+         }
+         function doSave()
+         {
+             var project_id = $('#project_id' ).val();
+             var site_id = $('#site_id' ).val();
+             var template_id = $('#template_id').val();
+             var time = $('#time').val();
+             var file = $('#file').val();
+             stmt.text = 'INSERT INTO uploads ("project_id","site_id","template_id","time","file") VALUES ( ' +
+                                 '\'' + project_id + '\', '+ site_id + ', ' + template_id + ', ' + 
+                                 time + ', ' +
+                                 '\'' + file + '\')';
+             state = INSERT_DATA;
+             stmt.execute();
+         }
+         function doStmtResult( event )
+         {
+             switch( state )
+             {
+                  case CREATE_SCHEMA:
+                       alert( 'The database table has been created.' );
+                       state = -1;
+                       break;
+                  case INSERT_DATA:
+                       project_id = $('#project_id' ).val("");
+                       site_id = $('#site_id' ).val("");
+                       template_id = $('#template_id').val("");
+                       time = $('#time').val("");
+                       file = $('#file').val("");
+                       alert( 'A new record has been stored.' );
+             }
+         }
         
         
     </script> 
 </head> 
-<body  onload="$('#add_project_div').toggle();" style="padding-left:5px;"> 
+<body  onload="$('#add_project_div').toggle();doLoad();" style="padding-left:5px;"> 
     <h1>VOEIS Uploader</h1> 
     <div id="login_div">
       <p>
@@ -111,7 +111,7 @@
     </p>  
     <p>
       Site ID:
-      <input type="password" name="site_id" id="site_id"/>
+      <input type="text" name="site_id" id="site_id"/>
     </p>
     <p>
       Template ID:
@@ -123,9 +123,9 @@
     </p>  
     <p>
       Time interval in minutes:(1440 = once a day):
-      <input type="password" name="time" id="time"/>
+      <input type="text" name="time" id="time"/>
     </p>
-    <button onClick="">Submit</button>
+    <button onClick="doSave();">Submit</button>
   </div>
 </body> 
 </html>
